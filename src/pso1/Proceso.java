@@ -12,49 +12,59 @@ import java.util.logging.Logger;
  *
  * @author SebasBD
  */
-public class Proceso extends Thread{
+public class Proceso{
     private int process_id;
     private String name;
-    private Boolean is_io_bound;
+    private String type;
     private int pc = 0;
     private int mar = 0;
     private String status = "Ready";
     private int instructions;
+    private int executeInstructions = 0; //SRT
+    private int priority;
+    private int cycle = 0;
+    private Integer interrupTime;
+    private Integer interrupDuration;
+    private int cpuId;
+    private int cicloEnqueCola = -1; //HRRN
+    private static int contadorID = 1;
+    private static boolean taken = false;
+    private int cyclesExecuteFromLastBlock = 0;
     
-    public Proceso (int process_id, String name, Boolean is_io_bound, int instructions){
-        this.process_id = process_id;
-        this.name = name;
-        this.is_io_bound = is_io_bound;
-        this.instructions = instructions;
-    }
-    
-     @Override
-    
-    public void run (){
-        while(true){
-            
-            try {
-                executeInstruction();
-                sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Proceso.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public Proceso (String name, String type, int instructions, Integer interrupTime, Integer interrupDuration){
+        if(name == null || name.isEmpty() ){
+            throw new IllegalArgumentException("El nombre no puede ser nulo o vacío.");
         }
-    }
+        if(instructions <= 0){
+            throw new IllegalArgumentException("La cantidad de instrucciones debe ser mayor que 0.");
+        }
+        if (type == null || (!type.equals("CPU bound") && !type.equals("I/O bound"))) {
+            throw new IllegalArgumentException("El tipo debe ser 'CPU bound' o 'I/O bound'.");
+        }
         
-    public void executeInstruction(){
-        while(pc < instructions) {
-            // Simular la ejecución de una instrucción
-            System.out.println("Ejecutando instrucción " + pc + " del proceso " + name);
-            mar = pc; // Actualizar el MAR con la dirección de la instrucción actual
-            pc++; // Incrementar el PC para la siguiente instrucción
+        if (type.equals("I/O bound")) {
+            if (interrupTime == null || interrupDuration == null) {
+                throw new IllegalArgumentException("Ciclos para generar y satisfacer excepción son obligatorios para procesos I/O bound.");
+            }
+            this.interrupTime = interrupTime;
+            this.interrupDuration = interrupDuration;
+        }else{
+            this.interrupTime = 0;
+            this.interrupDuration = 0;
         }
-            status = "Completed"; // Cambiar el estado si se completan todas las instrucciones
-            System.out.println("Proceso " + name + " completado.");
+        this.process_id = contadorID++;
+        this.name = name;
+        this.instructions = instructions;
+        this.priority = priority;
+        this.cpuId = 0;
+        this.type = type;
+        
     }
     
-    
-
+    // Calcula el tiempo restante para poilitica SRT
+    public int getRemainingTime() {
+    return instructions - getExecuteInstructions();
+    }
     /**
      * @return the process_id
      */
@@ -67,20 +77,6 @@ public class Proceso extends Thread{
      */
     public void setProcess_id(int process_id) {
         this.process_id = process_id;
-    }
-
-    /**
-     * @return the is_io_bound
-     */
-    public Boolean getIs_io_bound() {
-        return is_io_bound;
-    }
-
-    /**
-     * @param is_io_bound the is_io_bound to set
-     */
-    public void setIs_io_bound(Boolean is_io_bound) {
-        this.is_io_bound = is_io_bound;
     }
 
     /**
@@ -137,6 +133,160 @@ public class Proceso extends Thread{
      */
     public void setInstructions(int instructions) {
         this.instructions = instructions;
+    }
+
+    /**
+     * @return the cycle
+     */
+    public int getCycle() {
+        return cycle;
+    }
+
+    /**
+     * @param cycle the cycle to set
+     */
+    public void setCycle(int cycle) {
+        this.cycle = cycle;
+    }
+
+    /**
+     * @return the interrupTime
+     */
+    public int getInterrupTime() {
+        return interrupTime;
+    }
+
+    /**
+     * @param interrupTime the interrupTime to set
+     */
+    public void setInterrupTime(int interrupTime) {
+        this.interrupTime = interrupTime;
+    }
+
+    /**
+     * @return the interrupDuration
+     */
+    public int getInterrupDuration() {
+        return interrupDuration;
+    }
+
+    /**
+     * @param interrupDuration the interrupDuration to set
+     */
+    public void setInterrupDuration(int interrupDuration) {
+        this.interrupDuration = interrupDuration;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * @return the priority
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    /**
+     * @param priority the priority to set
+     */
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    /**
+     * @return the cpuId
+     */
+    public int getCpuId() {
+        return cpuId;
+    }
+
+    /**
+     * @param cpuId the cpuId to set
+     */
+    public void setCpuId(int cpuId) {
+        this.cpuId = cpuId;
+    }
+
+    /**
+     * @return the taken
+     */
+    public static boolean isTaken() {
+        return taken;
+    }
+
+    /**
+     * @param aTaken the taken to set
+     */
+    public static void setTaken(boolean aTaken) {
+        taken = aTaken;
+    }
+
+    /**
+     * @return the cyclesExecuteFromLastBlock
+     */
+    public int getCyclesExecuteFromLastBlock() {
+        return cyclesExecuteFromLastBlock;
+    }
+
+    /**
+     * @param cyclesExecuteFromLastBlock the cyclesExecuteFromLastBlock to set
+     */
+    public void setCyclesExecuteFromLastBlock(int cyclesExecuteFromLastBlock) {
+        this.cyclesExecuteFromLastBlock = cyclesExecuteFromLastBlock;
+    }
+
+    /**
+     * @return the executeInstructions
+     */
+    public int getExecuteInstructions() {
+        return executeInstructions;
+    }
+
+    /**
+     * @param executeInstructions the executeInstructions to set
+     */
+    public void setExecuteInstructions(int executeInstructions) {
+        this.executeInstructions = executeInstructions;
+    }
+
+    /**
+     * @return the cicloEnqueCola
+     */
+    public int getCicloEnqueCola() {
+        return cicloEnqueCola;
+    }
+
+    /**
+     * @param cicloEnqueCola the cicloEnqueCola to set
+     */
+    public void setCicloEnqueCola(int cicloEnqueCola) {
+        this.cicloEnqueCola = cicloEnqueCola;
     }
 
     

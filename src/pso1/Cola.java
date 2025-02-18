@@ -29,6 +29,7 @@ public class Cola<T> {
             back.setSiguiente(newNodo);
             back = newNodo;
         }
+        length++;
     }
     public T desencolar() {
         if (isEmpty()) {
@@ -39,6 +40,7 @@ public class Cola<T> {
         if (front == null) {
             back = null;
         }
+        length--;
         return data;
     }
     
@@ -69,7 +71,61 @@ public class Cola<T> {
             actual = actual.getSiguiente();
         }
     }
+    
+    public void imprimirCola() {
+        if (isEmpty()) {
+            System.out.println("La cola está vacía.");
+            return;
+        }
+        
+        Nodo<T> actual = front;
+        while (actual != null) {
+            Proceso proceso = (Proceso) actual.getData(); // Hacemos un casting a Proceso
+            System.out.print(proceso.getName() + " "); // Imprimimos el nombr
+            //System.out.print(actual.getData() + " ");
+            actual = actual.getSiguiente();
+        }
+        System.out.println();
+    }
 
+    public Proceso searchNotTaken() {
+    Nodo<Proceso> acc = (Nodo<Proceso>) front; // Comienza desde el frente de la cola
+    while (acc != null) {
+        if (!acc.getData().isTaken()) {
+            return acc.getData(); // Retorna el proceso no tomado
+        }
+        acc = acc.getSiguiente(); // Avanza al siguiente nodo
+    }
+    return null; // No se encontró ningún proceso no tomado
+    }
+    
+    public void remove(Proceso proceso) {
+        if (isEmpty()) {
+            return; 
+        }
+
+        if (((Proceso)front.getData()).getProcess_id() == proceso.getProcess_id()) {
+            front = front.getSiguiente(); // Mover el frente al siguiente nodo
+            if (front == null) {
+                back = null; // Si la cola quedó vacía
+            }
+            length--;
+            return;
+        }
+
+        Nodo<Proceso> actual = (Nodo<Proceso>) front;
+        while (actual.getSiguiente() != null) {
+            if (actual.getSiguiente().getData().getProcess_id() == proceso.getProcess_id()) {
+                actual.setSiguiente(actual.getSiguiente().getSiguiente());
+                if (actual.getSiguiente() == null) {
+                    back = (Nodo<T>) actual; // Actualizar el final de la cola
+                }
+                length--;
+                return;
+            }
+            actual = actual.getSiguiente();
+        }
+    }
     
     public boolean isEmpty(){
         return front == null;
