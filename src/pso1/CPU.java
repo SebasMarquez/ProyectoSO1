@@ -110,7 +110,7 @@ public class CPU extends Thread{
                         SO.setPc(SO.getPc() + 1);
                         SO.setMar(SO.getMar() + 1);
                         setProcess(getCurrentProcess());
-                        //this.currentProcess = SO;
+                        
                     }
                     
                     setFreeProcess();
@@ -212,14 +212,7 @@ public class CPU extends Thread{
                                     currentProcess.setStatus("Finished");
                                     PSO1.colaFinish.encolar(currentProcess);
                                 
-                                //nroProcesoRR = nroProcesoRR + 1;
-                                //if(proceso.getTipo().equals("CPU bound")){
-                                            //ProcesosCPURR = ProcesosCPURR + 1;
-                                        
-                                        //}else if(proceso.getTipo().equals("I/O bound")){
-                                            //ProcesosIORR = ProcesosIORR + 1;
-                                        
-                                        //}
+                               
                                     setFreeProcess();
                                     break;
                                 }
@@ -260,14 +253,7 @@ public class CPU extends Thread{
                                     currentProcess.setStatus("Finished");
                                     PSO1.colaFinish.encolar(currentProcess);
                                 
-                                //nroProcesoRR = nroProcesoRR + 1;
-                                //if(proceso.getTipo().equals("CPU bound")){
-                                            //ProcesosCPURR = ProcesosCPURR + 1;
-                                        
-                                        //}else if(proceso.getTipo().equals("I/O bound")){
-                                            //ProcesosIORR = ProcesosIORR + 1;
-                                        
-                                        //}
+                               
                                     setFreeProcess();
                                     break;
                                 }
@@ -305,14 +291,7 @@ public class CPU extends Thread{
                                     currentProcess.setStatus("Finished");
                                     PSO1.colaFinish.encolar(currentProcess);
                                 
-                                //nroProcesoRR = nroProcesoRR + 1;
-                                //if(proceso.getTipo().equals("CPU bound")){
-                                            //ProcesosCPURR = ProcesosCPURR + 1;
-                                        
-                                        //}else if(proceso.getTipo().equals("I/O bound")){
-                                            //ProcesosIORR = ProcesosIORR + 1;
-                                        
-                                        //}
+                              
                                     setFreeProcess();
                                     break;
                                 }
@@ -350,14 +329,7 @@ public class CPU extends Thread{
                                     currentProcess.setStatus("Finished");
                                     PSO1.colaFinish.encolar(currentProcess);
                                 
-                                //nroProcesoRR = nroProcesoRR + 1;
-                                //if(proceso.getTipo().equals("CPU bound")){
-                                            //ProcesosCPURR = ProcesosCPURR + 1;
-                                        
-                                        //}else if(proceso.getTipo().equals("I/O bound")){
-                                            //ProcesosIORR = ProcesosIORR + 1;
-                                        
-                                        //}
+                           
                                     setFreeProcess();
                                     break;
                                 }

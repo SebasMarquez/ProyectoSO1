@@ -9,6 +9,7 @@ import Interfaz.MainPage;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -94,25 +95,24 @@ public class PSO1 {
         }).start();
     }
     public static void handlerColaBlock(){
-        new Thread(() -> {
-            while (true) {
-                    int cycleDuration = mainPage.getCycleDuration();    
-                // Procesar la cola de bloqueados
-               
-                    if(!colaBlock.isEmpty()){
-                        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    int cycleDuration = mainPage.getCycleDuration();
+                    // Procesar la cola de bloqueados
+                    if (!colaBlock.isEmpty()) {
                         Proceso proceso = (Proceso) colaBlock.desencolar();
                         int durationInIO = proceso.getInterrupDuration();
                         while(proceso.getInterrupDuration() != 0){
                             proceso.setInterrupDuration(proceso.getInterrupDuration() - 1);
-                        
+                            
                         }
-                        
                         proceso.setInterrupDuration(durationInIO);
                         proceso.setStatus("Ready");
                         colaReady.encolar(proceso);
- 
-                    }else{
+                        
+                    } else {
                         try {
                             Thread.sleep(cycleDuration * 1000);
                         } catch (InterruptedException ex) {
@@ -120,6 +120,7 @@ public class PSO1 {
                         }
                     }
                 }
+            }
         }).start();
     }
     
@@ -173,7 +174,6 @@ public class PSO1 {
 
         // Reencolar procesos ordenados
         for (Proceso p : procesos) {
-            System.out.print(p.getName());
             colaReady.encolar(p);
         }
     }
@@ -206,7 +206,6 @@ public class PSO1 {
 
     // Volver a encolar los procesos en la cola de listos ordenados
         for (Proceso p : procesos) {
-            System.out.println(p.getName());
             colaReady.encolar(p);
             
         }
@@ -219,7 +218,6 @@ public class PSO1 {
         if (size <= 0) {
             return; // Salir de la función si no hay procesos
         }
-        System.out.print("Estoy en HRRN");
         Proceso[] procesos = new Proceso[size];
 
         for (int i = 0; i < size; i++) {
@@ -247,7 +245,6 @@ public class PSO1 {
 
     // Volver a encolar los procesos en la cola de listos ordenados
         for (Proceso p : procesos) {
-            System.out.print(p.getName());
             colaReady.encolar(p);
         }
     }

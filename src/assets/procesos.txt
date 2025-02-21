@@ -1,7 +1,5 @@
-P1,CPU bound,10,0,0
-P2,CPU bound,10,0,0
-P3,CPU bound,10,0,0
-P4,CPU bound,10,0,0
-P9,I/O bound,6,4,2
-p1,I/O bound,10,5,4
-P1,I/O bound,10,5,2
+Proceso_1,I/O bound,3,3,1
+Proceso_2,CPU bound,6,0,0
+Proceso_3,I/O bound,8,2,1
+Proceso_4,CPU bound,9,0,0
+Proceso_5,I/O bound,3,2,2
